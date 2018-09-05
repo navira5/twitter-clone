@@ -12,8 +12,7 @@ db.once('open', function() {
 });
 
 var itemSchema = mongoose.Schema({
-  quantity: Number,
-  description: String
+  searchTerm: String
 });
 
 var Item = mongoose.model('Item', itemSchema);
@@ -28,4 +27,11 @@ var selectAll = function(callback) {
   });
 };
 
+var save = function(term, callback) {
+  let newTerm = new Item({searchTerm: term})
+  return newTerm.save(callback)
+  
+};
+
 module.exports.selectAll = selectAll;
+module.exports.save = save;
