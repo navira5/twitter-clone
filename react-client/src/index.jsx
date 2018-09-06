@@ -13,13 +13,27 @@ class App extends React.Component {
     }
     this.handleSearch = this.handleSearch.bind(this);
     this.handleTerm = this.handleTerm.bind(this);
+    this.handleFetch = this.handleFetch.bind(this);
   }
 
   
   componentDidMount() {
-   axios.get('/items')
+   this.handleFetch();
+  }
+
+  handleTerm(e) {
+    this.setState({
+      term: e.target.value
+    })
+  }
+
+  handleFetch() {
+    axios.get('/items')
     .then((response) => {
-      let searchTermReturn = response.data[0].searchTerm
+      //response from server
+  //     data from db in server--> [ { _id: 5b903683bd576119fb9c80b5, searchTerm: 'clinton', __v: 0 },
+  // { _id: 5b903bdf01da171e21ffdd29, searchTerm: 'jacob', __v: 0 } ]
+
       console.log('get search data-->',typeof searchTermReturn)
       this.setState({
         items: [...this.state.items, searchTermReturn]
@@ -30,12 +44,6 @@ class App extends React.Component {
     })
   }
 
-  handleTerm(e) {
-    this.setState({
-      term: e.target.value
-    })
-  }
-
   handleSearch() {
     console.log('search term in client-->', this.state.term)
     axios.post('/items', {
@@ -43,6 +51,8 @@ class App extends React.Component {
     })
     .then(function(response) {
       console.log('client post response-->', response);
+      this.handleFetch();
+
     })
     .catch(function(err) {
       console.log('client err', err);

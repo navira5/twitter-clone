@@ -12,7 +12,13 @@ db.once('open', function() {
 });
 
 var itemSchema = mongoose.Schema({
-  searchTerm: String
+  searchTerm: String,
+  createdAt: String,
+  text: String,
+  retweetcount: Number,
+  favoritecount: Number,
+  username: String,
+  screen: String
 });
 
 var Item = mongoose.model('Item', itemSchema);
@@ -27,10 +33,16 @@ var selectAll = function(callback) {
   });
 };
 
-var save = function(term, callback) {
-  let newTerm = new Item({searchTerm: term})
+var save = function(term, date, tweet,retweet,favorite,name,screen, callback) {
+  let newTerm = new Item({
+    searchTerm: term,
+    createdAt: date,
+    text: tweet,
+    retweetcount: retweet,
+    favoritecount: favorite,
+    username: name,
+    screen: screen})
   return newTerm.save(callback)
-  
 };
 
 module.exports.selectAll = selectAll;

@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 // UNCOMMENT THE DATABASE YOU'D LIKE TO USE
 // var items = require('../database-mysql');
 var items = require('../database-mongo');
+var twitter = require('./twitter')
 
 var app = express();
 
@@ -17,6 +18,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/items', function (req, res) {
   items.selectAll(function(err, data) {
+    console.log('data from db in server-->', data)
     if(err) {
       res.sendStatus(500);
     } else {
@@ -27,14 +29,24 @@ app.get('/items', function (req, res) {
 
 
 app.post('/items', function (req, res) {
-  console.log('server post term', req.body.term);
-  items.save(req.body.term, function(err, data) {
-    if(err) {
-      res.sendStatus(500);
-    } else {
-      res.send('response from server item saved to database')
-    }
-  });
+  var searchTerm = req.body.term;
+
+  twitter.getTweets(searchTerm, function(err, response) {
+    response.forEach(tweet => {
+      date = tweet.createdAt;
+      text = tweet.text;
+      retweets = tweet.retweetsCount;
+      user = tweet.username;
+      screen = tweet.userscreen
+
+      items.save(searchTerm, date, text, retweets, user, screen, function(err, response) {
+        if (err) {
+          res.send(500)
+        } else {
+          res.end()
+      }
+    })
+  })
 });
 
 app.listen(3000, function() {
