@@ -30,14 +30,11 @@ class App extends React.Component {
   handleFetch() {
     axios.get('/items')
     .then((response) => {
-      //response from server
-  //     data from db in server--> [ { _id: 5b903683bd576119fb9c80b5, searchTerm: 'clinton', __v: 0 },
-  // { _id: 5b903bdf01da171e21ffdd29, searchTerm: 'jacob', __v: 0 } ]
-
-      console.log('get search data-->',typeof searchTermReturn)
-      this.setState({
-        items: [...this.state.items, searchTermReturn]
-      })
+      console.log('get search data-->', typeof searchTermReturn)
+      //reformat response for setting items state
+      // this.setState({
+      //   items: [...this.state.items, searchTermReturn]
+      // })
     })
     .catch((err) => {
       console.log('error from client get', err)
